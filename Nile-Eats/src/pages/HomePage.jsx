@@ -1,5 +1,6 @@
 import React from 'react'
 import { useRef, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faHouse } from '@fortawesome/free-solid-svg-icons'
 import { faMessage, faShoppingCart } from '@fortawesome/free-solid-svg-icons'
@@ -48,9 +49,15 @@ const HomePage = () => {
       <div className='hidden h-[10vh] w-full md:flex md:justify-center md:items-center '>
         <img src={logo} className='absolute left-0 h-[70px] w-[70px] top-1 bg-white rounded-full' alt="logo" />
         <ul className='flex gap-10 text-lg font-medium'>
-          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>Home</li>
-          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>Menu</li>
-          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>About</li>
+          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>
+            <Link to='/' >Home</Link>
+          </li>
+          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>
+            <Link to='/' >Menu</Link>
+          </li>
+          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>
+            <Link to='/Admin' >About</Link>
+          </li>
         </ul>
         <div className=' h-[10vh] w-[300px] absolute right-0 flex justify-around items-center'>
           <input ref={onOffRef} type='text' placeholder='Search for food' className='h-[30px] w-[180px] border-white border-1 p-2 absolute left-13' />
