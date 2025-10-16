@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faHouse } from '@fortawesome/free-solid-svg-icons'
 import { faMessage, faShoppingCart } from '@fortawesome/free-solid-svg-icons'
-import { faSearch, faBars } from '@fortawesome/free-solid-svg-icons'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'  
+import { faSearch } from '@fortawesome/free-solid-svg-icons'  
 import { faGreaterThan, faLessThan } from '@fortawesome/free-solid-svg-icons'
 import { faWhatsapp, faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons'
 import FoodCard from '../components/FoodCard'
@@ -14,9 +15,37 @@ import logo from '../assets/logo.png'
 import rice from '../assets/rice.png'
 
 const HomePage = () => {
-  const onOffRef = useRef(null);
-  const toggleRef = useRef(null);
+  const focusInput = useRef();
+  const [isScroll, setIscroll] = useState(false);
   const spinRef = useRef(null);
+  const transformIcon = useRef(null);
+  const transformIcon1 = useRef(null);
+  const transformIcon2 = useRef(null);
+
+  useEffect(() => {
+    focusInput.current.focus();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 70) {
+        setIscroll(true);
+      } else {
+        setIscroll(false);
+      }
+    }
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [])
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: false
+    });
+  }, [])
+
 
   const rotate = () => {
     spinRef.current.classList.toggle('animate-spin');
@@ -29,50 +58,44 @@ const HomePage = () => {
     spinRef.current.classList.remove('animate-spin');
   }
   
-
-  const handleToggle = () => {
-    toggleRef.current.style.display = 'block';
+  const handleTransform = () => {
+    const form = transformIcon.current;
+    form.style.transform = 'scale(2)';
+    form.style.transition = 'ease-in-out';
+    form.style.delay = '10s';
+  
   }
 
-  const hiddenMenu = () => {
-    toggleRef.current.style.display = 'none';
+    const handleTransform1 = () => {
+    const form = transformIcon.current;
+    form.style.transform = 'scale(1)';
+    form.style.transition = 'ease-in-out';
+    form.style.delay = '10s';
   }
 
 
-  const handleHideSearch = () => {
-    onOffRef.current.style.display = 'block';
-  }
+ 
   return (
-    <div className='h-[100vh] w-full  relative overflow-hidden bg-red-600'>
-      <div className=' bg-gray-800 hidden md:flex rounded-[100%] w-[650px] h-[650px] absolute top-[-10%] right-[-15%]'></div>
+    <div className='h-[250vh] w-full  relative overflow-hidden bg-red-600'>
+      <div className=' bg-gray-800 hidden md:flex rounded-[100%] w-[750px] h-[750px] absolute top-[-10%] right-[-15%]'></div>
       {/*nav section*/}
-      <div className='hidden h-[10vh] w-full md:flex md:justify-center md:items-center '>
-        <img src={logo} className='absolute left-0 h-[70px] w-[70px] top-1 bg-white rounded-full' alt="logo" />
+      <div className={`hidden h-[15vh] w-full md:flex md:justify-center md:items-center fixed transition-all duration-500 ease-in-out ${isScroll? 'bg-white text-black shadow-md animate-slideDown' : 'bg-transparent text-white'} z-50 `}>
+        <img src={logo} className='absolute left-2 h-[70px] w-[70px] top-1 bg-white rounded-full' alt="logo" />
         <ul className='flex gap-10 text-lg font-medium'>
-          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>
-            <Link to='/' >Home</Link>
+          <li className='hover:border-b-1 border-white cursor-pointer font-bold '>
+            <Link to='/' >HOME</Link>
           </li>
-          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>
-            <Link to='/' >Menu</Link>
+          <li className='hover:border-b-1 border-white cursor-pointer font-bold  '>
+            <Link to='/' >MENU</Link>
           </li>
-          <li className='hover:border-b-1 border-white cursor-pointer  text-white'>
-            <Link to='/Admin' >About</Link>
+          <li className='hover:border-b-1 border-white cursor-pointer font-bold '>
+            <Link to='/Admin' >ABOUT</Link>
           </li>
         </ul>
         <div className=' h-[10vh] w-[300px] absolute right-0 flex justify-around items-center'>
-          <input ref={onOffRef} type='text' placeholder='Search for food' className='h-[30px] w-[180px] border-white border-1 p-2 absolute left-13' />
-          <FontAwesomeIcon icon={faSearch} size='1x' onClick={handleHideSearch} className='absolute left-50 top-5.5 hidden text-white' />
-          <FontAwesomeIcon onClick={handleToggle}  icon={faBars} size='2x' className='absolute right-5 cursor-pointer text-white' />
-          <div ref={toggleRef} className='hidden absolute top-2 right-3 bg-white shadow-md rounded-md p-4 h-[400px] w-[200px] transition-all transform z-30'>
-            <ul className='flex flex-col gap-4'>
-              <FontAwesomeIcon icon={faXmark} size='2x' className='absolute right-3 top-3 cursor-pointer text-blue-400' onClick={hiddenMenu} />
-              <li className='hover:border-b-1 border-black cursor-pointer  text-black'>Home</li>
-              <li className='hover:border-b-1 border-black cursor-pointer  text-black'>Menu</li>
-              <li className='hover:border-b-1 border-black cursor-pointer  text-black'>About</li>
-              <li className='hover:border-b-1 border-black cursor-pointer  text-black'>Contact</li>
-              <li className='hover:border-b-1 border-black cursor-pointer  text-black'>Cart</li>
-            </ul>
-          </div>
+          <input ref={focusInput} type='text' placeholder='Search for food' className='h-[30px] w-[180px] border-white border-1 p-2 absolute left-13' />
+          <FontAwesomeIcon icon={faSearch} size='1x'  className='absolute left-50 top-5.5 hidden text-white' />
+          
         </div>
       </div>
       {/* first main section for small devices*/}
@@ -122,17 +145,19 @@ const HomePage = () => {
 
       {/* second main section for medium and large devices*/}
       <div className='w-full h-[90vh] hidden justify-center items-center md:flex'>
-        <div className='h-[450px] w-[550px] absolute left-[20px] flex-col flex items-center justify-center text-white'>
-          <h1>Are You Hungry?</h1>
-          <h1 className=' text-7xl font-bold'>Don't Wait!</h1>
+        <div className='h-[450px] w-[550px] absolute left-[20px] gap-3 flex-col flex items-center justify-center text-white'>
+          <h1 className='text-5xl'>Are You Hungry?</h1>
+          <h1 className=' text-8xl font-bold'>Don't Wait!</h1>
           <h1 className='text-3xl'>Let's order food now</h1>
-          <button onMouseEnter={rotate} onMouseLeave={removeRotate} className='border-2 rounded-2xl text-[9px] cursor-pointer p-1 mt-4'>Check Out Menu</button>
-          <div className='h-[100px] w-[400px] bg-red-600 absolute bottom-5 flex justify-center items-center'>
-            <div className='h-[50px] w-[200px] bg-blue-600 flex justify-center items-center'></div>
-            <div className='h-[25px] w-[25px] absolute bg-black left-23 rounded-full'>
+          <button onMouseEnter={rotate} onMouseLeave={removeRotate} className='border-2 rounded-2xl text-[9px] cursor-pointer p-2 mt-4 hover:bg-yellow-200 hover:text-black'>Check Out Menu</button>
+          <div className='h-[70px] w-[400px] bg-green-600 absolute bottom-0 flex justify-center items-center'>
+            <div className='h-[50px] w-[300px] bg-blue-600 flex justify-center items-center'>
+              <h1>hello</h1>
+            </div>
+            <div className='h-[25px] w-[25px] absolute bg-black left-10 rounded-full'>
               <FontAwesomeIcon icon={faLessThan} size='1x' className='text-white' />
             </div>
-            <div className='h-[25px] w-[25px] absolute bg-black right-23 rounded-full'>
+            <div className='h-[25px] w-[25px] absolute bg-black right-10 rounded-full'>
               <FontAwesomeIcon icon={faGreaterThan} size='1x' className='text-white' />
             </div>
           </div>
@@ -140,15 +165,17 @@ const HomePage = () => {
         <div ref={spinRef} className='bg-pink-300 h-[400px] w-[400px] rounded-[100%] border-2 border-black absolute right-[200px]'>
           <img src={rice} alt="food" className='h-[400px] w-[400px] ' />
         </div>
-        <div className='absolute h-[200px] w-[60px] bg-white right-0 flex flex-col justify-center items-center rounded-l-2xl hover:shadow-2xl'>
-              <FontAwesomeIcon icon={faWhatsapp} size='2x' className='text-green-500 mt-4 cursor-pointer' />
-              <FontAwesomeIcon icon={faFacebook} size='2x' className='text-blue-600 mt-4 cursor-pointer' />
-              <FontAwesomeIcon icon={faInstagram} size='2x' className='text-pink-500 mt-4 cursor-pointer' />
+        <div className='absolute h-[200px] w-[60px] bg-white right-0 flex flex-col justify-center items-center rounded-l-2xl hover:shadow-5xl'>
+              <FontAwesomeIcon ref={transformIcon} onMouseOut={handleTransform1} onMouseOver={handleTransform} icon={faWhatsapp} size='2x' className='text-green-500 mt-4 cursor-pointer shadow-2xl' />
+              <FontAwesomeIcon ref={transformIcon1} onMouseOut={() => transformIcon1.current.style.transform = 'scale(1)'} onMouseOver={() => transformIcon1.current.style.transform = 'scale(1.5)'} icon={faFacebook} size='2x' className='text-blue-600 mt-4 cursor-pointer' />
+              <FontAwesomeIcon ref={transformIcon2} onMouseOut={() => transformIcon2.current.style.transform = 'scale(1)'} onMouseOver={() => transformIcon2.current.style.transform = 'scale(2)'} icon={faInstagram} size='2x' className='text-pink-500 mt-4 cursor-pointer' />
         </div>
       </div>
-      
+      <div>
+       <h1 data-aos='fade-up'>welcome</h1>
+      </div>
     </div>
   )
 }
 
-export default HomePage
+export default HomePage;
